@@ -8,6 +8,7 @@ from db_helpers import blaster_db, command_db
 
 _LOGGER = logging.getLogger(__name__)
 
+
 ## Generic helper functions
 
 
@@ -28,10 +29,10 @@ def get_blaster(attr, value):
     else:
         raise falcon.HTTPBadRequest(
             description="Value of '"
-            + value
-            + "' not found for Blaster '"
-            + attr
-            + "' attribute"
+                        + value
+                        + "' not found for Blaster '"
+                        + attr
+                        + "' attribute"
         )
 
 
@@ -54,10 +55,10 @@ def get_command(target_name, command_name):
     else:
         raise falcon.HTTPBadRequest(
             description="Command '"
-            + command_name
-            + "' not found for Target '"
-            + target_name
-            + "'"
+                        + command_name
+                        + "' not found for Target '"
+                        + target_name
+                        + "'"
         )
 
 
@@ -186,10 +187,10 @@ class BlasterRESTResource(object):
             else:
                 raise falcon.HTTPBadRequest(
                     description="Command '"
-                    + command_name
-                    + "' not found for Target '"
-                    + target_name
-                    + "'"
+                                + command_name
+                                + "' not found for Target '"
+                                + target_name
+                                + "'"
                 )
         else:
             raise falcon.HTTPBadRequest(
@@ -305,10 +306,10 @@ class TargetCommandRESTResource(object):
         if not get_command(target_name, new_name).update_name(new_name):
             raise falcon.HTTPConflict(
                 description="Command '"
-                + new_name
-                + "' already exists for Target'"
-                + target_name
-                + "'"
+                            + new_name
+                            + "' already exists for Target'"
+                            + target_name
+                            + "'"
             )
 
     def on_delete(self, req, resp, target_name, command_name):
