@@ -1,11 +1,12 @@
 import falcon
+import json
 
 
 class RunRecSession(object):
     def on_put(self, req, resp, name):
-        """Handles GET requests"""
+        """Handles PUT requests"""
         resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = 'Demarrage video {} avec benevole', name
+        resp.body = json.dumps({"Nom du bénévole": name})
 
 
 # falcon.API instances are callable WSGI apps
