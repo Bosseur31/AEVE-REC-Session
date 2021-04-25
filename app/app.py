@@ -1,6 +1,7 @@
-import falcon
 import json
-import subprocess
+
+import falcon
+
 import rec
 
 
