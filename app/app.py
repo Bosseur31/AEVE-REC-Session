@@ -9,7 +9,7 @@ class RunRecSession(object):
         """Handles PUT requests"""
         pid = rec.rec_video(name)
         resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = json.dumps({"Nom du bénévole": pid})
+        resp.body = json.dumps({"Nom du bénévole": name})
 
 
 class StopRecSession(object):
