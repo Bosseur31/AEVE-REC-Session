@@ -13,7 +13,7 @@ class RunRecSession(object):
 
 
 class StopRecSession(object):
-    def on_put(self, req, resp, name):
+    def on_get(self, req, resp):
         """Handles PUT requests"""
         pid = rec.unrec_video()
         resp.status = falcon.HTTP_200  # This is the default status
@@ -29,4 +29,4 @@ stop_rec = StopRecSession()
 
 # things will handle all requests to the '/things' URL path
 app.add_route('/run_rec/{name}', run_rec)
-app.add_route('/stop_rec/{name}', stop_rec)
+app.add_route('/stop_rec', stop_rec)
