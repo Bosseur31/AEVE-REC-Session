@@ -25,7 +25,7 @@ class StatusRecSession(object):
         if status[0] == 'true':
             info = rec.info_rec(status[1])
             resp.status = falcon.HTTP_200
-            resp.body = json.dumps({"id": info[0], 'name': info[1], 'time': info[2], 'status': info[3]})
+            resp.body = json.dumps({"id": info[0], 'name': info[1], 'file': info[2], 'time': info[3], 'status': info[4]})
         else:
             resp.status = falcon.HTTP_200  # This is the default status
             resp.body = json.dumps({"status": status})

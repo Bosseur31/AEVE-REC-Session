@@ -23,6 +23,7 @@ def rec_video(name):
     rstp_server = 'rtsp://admin@192.168.31.56/0/av0'
 
     # Nom fichier
+    file_name = name + ' ' + jour + '.mp4'
     file_directory = '/home/aymeric/Documents/data/' + annee + '/Semaine-' + semaine + '/' + name + ' ' + jour + '.mp4'
 
     # Démarrage VLC
@@ -41,11 +42,12 @@ def rec_video(name):
     cur.execute('''CREATE TABLE IF NOT EXISTS rec(
         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
         name TEXT,
+        file TEXT,
         time INTEGER,
         status INTEGER
     )''')
-    donnees = (name, ts, 1)
-    cur.execute("INSERT INTO rec (name, time, status) VALUES (?, ?, ?)", donnees)
+    donnees = (name, file_name, ts, 1)
+    cur.execute("INSERT INTO rec (name, file, time, status) VALUES (?, ?, ?, ?)", donnees)
     con.commit()
     con.close()
 
@@ -95,11 +97,12 @@ def info_rec(rec_id):
     for row in res:
         rec_id = row[0]
         rec_name = row[1]
-        rec_time = row[2]
-        if row[3] == 1:
+        rec_file = row[2]
+        rec_time = row[3]
+        if row[4] == 1:
             rec_status = 'true'
         else:
             rec_status = 'false'
     con.close()
 
-    return rec_id, rec_name, rec_time, rec_status
+    return rec_id, rec_name, rec_file, rec_time, rec_status
