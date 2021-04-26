@@ -4,8 +4,8 @@ import rec
 
 
 class RunRecSession(object):
-    def on_put(self, req, resp, name):
-        """Handles PUT requests"""
+    def on_post(self, req, resp, name):
+        """Handles POST requests"""
         pid = rec.rec_video(name)
         resp.status = falcon.HTTP_200  # This is the default status
         resp.body = json.dumps({"Nom du bénévole": name})
