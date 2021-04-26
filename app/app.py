@@ -4,9 +4,11 @@ import rec
 
 
 class RunRecSession(object):
-    def on_post(self, req, resp, name):
+    def on_post(self, req, resp):
         """Handles POST requests"""
-        pid = rec.rec_video(name)
+        data = json.load(req.stream)
+        name = data['name']
+        rec.rec_video(name)
         resp.status = falcon.HTTP_200  # This is the default status
         resp.body = json.dumps({"Nom du bénévole": name})
 
@@ -40,6 +42,6 @@ stop_rec = StopRecSession()
 status_rec = StatusRecSession()
 
 # things will handle all requests to the '/things' URL path
-app.add_route('/run_rec/{name}', run_rec)
+app.add_route('/run_rec', run_rec)
 app.add_route('/stop_rec', stop_rec)
 app.add_route('/status_rec', status_rec)
