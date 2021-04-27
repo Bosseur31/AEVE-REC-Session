@@ -16,7 +16,7 @@ def rec_video(name):
     jour = timestamp.strftime('%d-%m-%y %Hh%M')
 
     # Création dossier
-    path = Path('/home/aymeric/Documents/data/' + annee + '/Semaine-' + semaine + '/')
+    path = Path('/srv/aeve-rec-session/data/' + annee + '/Semaine-' + semaine + '/')
     path.mkdir(parents=True, exist_ok=True)
 
     # Flux réseau caméra
@@ -24,19 +24,19 @@ def rec_video(name):
 
     # Nom fichier
     file_name = name + ' ' + jour + '.mp4'
-    file_directory = '/home/aymeric/Documents/data/' + annee + '/Semaine-' + semaine + '/' + name + ' ' + jour + '.mp4'
+    file_directory = '/srv/aeve-rec-session/data/' + annee + '/Semaine-' + semaine + '/' + name + ' ' + jour + '.mp4'
 
     # Démarrage VLC
     cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_directory + ',access=file}"'
     process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     pid = os.getpgid(process.pid)
-    f = open('/home/aymeric/Documents/data/out.ser', "wb")
+    f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "wb")
     pickler = pickle.Pickler(f, pickle.HIGHEST_PROTOCOL)
     pickler.dump(pid)
     f.close()
 
     # Mise en BDD
-    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
+    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS rec(
@@ -55,13 +55,13 @@ def rec_video(name):
 
 
 def unrec_video():
-    f = open('/home/aymeric/Documents/data/out.ser', "rb")
+    f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "rb")
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
     f.close()
     os.killpg(pid, signal.SIGTERM)
 
-    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
+    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute("UPDATE rec SET status = 0")
     con.commit()
@@ -71,7 +71,7 @@ def unrec_video():
 
 
 def status_rec():
-    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
+    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute("SELECT id FROM rec WHERE status = 1 ORDER BY id DESC LIMIT 1")
     data = cur.fetchall()
@@ -90,7 +90,7 @@ def status_rec():
 
 
 def info_rec(rec_id):
-    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
+    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute("SELECT * FROM rec WHERE id = ?", (rec_id,))
     res = cur.fetchall()
