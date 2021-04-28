@@ -20,7 +20,7 @@ def rec_video(name):
     path.mkdir(parents=True, exist_ok=True)
 
     # Flux réseau caméra
-    rstp_server = 'rtsp://admin@192.168.31.56/0/av0'
+    rstp_server = 'rtsp://admin@192.168.1.142/0/av0'
 
     # Nom fichier
     file_name = name + ' ' + jour + '.mp4'
@@ -73,6 +73,14 @@ def unrec_video():
 def status_rec():
     con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
+    cur.execute('''CREATE TABLE IF NOT EXISTS rec(
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            name TEXT,
+            file TEXT,
+            time INTEGER,
+            status INTEGER
+        )''')
+    con.commit()
     cur.execute("SELECT id FROM rec WHERE status = 1 ORDER BY id DESC LIMIT 1")
     data = cur.fetchall()
 
