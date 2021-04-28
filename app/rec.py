@@ -59,8 +59,10 @@ def unrec_video():
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
     f.close()
-    os.killpg(pid, signal.SIGTERM)
-
+    try:
+        os.killpg(pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
     con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute("UPDATE rec SET status = 0")
