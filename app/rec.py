@@ -5,18 +5,17 @@ import signal
 import subprocess
 from pathlib import Path
 import sqlite3
+import owncloud
 
 
 def rec_video(name):
     # Déclaration de variable
     ts = datetime.datetime.now().timestamp()
     timestamp = datetime.datetime.now()
-    annee = timestamp.strftime('%Y')
-    semaine = timestamp.strftime('%V le %m.%y')
     jour = timestamp.strftime('%d-%m-%y %Hh%M')
 
     # Création dossier
-    path = Path('/srv/aeve-rec-session/data/' + annee + '/Semaine-' + semaine + '/')
+    path = Path('/srv/aeve-rec-session/data/temp/')
     path.mkdir(parents=True, exist_ok=True)
 
     # Flux réseau caméra
@@ -24,15 +23,16 @@ def rec_video(name):
 
     # Nom fichier
     file_name = name + ' ' + jour + '.mp4'
-    file_directory = '/srv/aeve-rec-session/data/' + annee + '/Semaine-' + semaine + '/' + name + ' ' + jour + '.mp4'
+    file_source = '/srv/aeve-rec-session/data/temp/' + file_name
 
     # Démarrage VLC
-    cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_directory + ',access=file}"'
+    cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_source + ',access=file}"'
     process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     pid = os.getpgid(process.pid)
     f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "wb")
     pickler = pickle.Pickler(f, pickle.HIGHEST_PROTOCOL)
     pickler.dump(pid)
+    pickler.dump(file_source)
     f.close()
 
     # Mise en BDD
@@ -55,19 +55,59 @@ def rec_video(name):
 
 
 def unrec_video():
+    login = 'simon'
+    password = 'tchaik01'
+    url_nextcloud = 'http://cloud.aymeric-mai.fr/'
+    datetime.datetime.now().timestamp()
+    timestamp = datetime.datetime.now()
+    annee = timestamp.strftime('%Y')
+    semaine = timestamp.strftime('%V le %m.%y')
+
+    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
+    cur = con.cursor()
     f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "rb")
+
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
+    file_source = unpickler.load()
     f.close()
+
     try:
         os.killpg(pid, signal.SIGTERM)
     except ProcessLookupError:
         pass
-    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
-    cur = con.cursor()
+
+    # Use owncloud library for create dir of file mp4
+
+    oc = owncloud.Client(url_nextcloud)
+    oc.login(login, password)
+
+    path_dest = '/Simon/Vidéo-Simon/' + annee + '/Semaine-' + semaine + ''
+    url_path_nextcloud = url_nextcloud + 'remote.php/dav/files/' + login + '/' + path_dest
+
+    try:
+        oc.mkdir('Simon/Vidéo-Simon/' + annee + '')
+    except:
+        pass
+
+    try:
+        oc.mkdir('Simon/Vidéo-Simon/' + annee + '/Semaine-' + semaine + '')
+    except:
+        pass
+
+    cmdbase = 'curl -u ' + login + ':' + password + ' -T ' + file_source + ' ' + url_path_nextcloud + ''
+    process = subprocess.Popen(cmdbase)
+
+    # Pour une utilisation de la library python
+    # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
+
     cur.execute("UPDATE rec SET status = 0")
     con.commit()
     con.close()
+
+    # Supprimer le fichier vidéo temporaire
+    if os.path.exists(file_source):
+        os.remove(file_source)
 
     return pid
 
