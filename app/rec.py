@@ -29,11 +29,17 @@ def rec_video(name):
     cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_source + ',access=file}"'
     process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     pid = os.getpgid(process.pid)
+
+
     f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "wb")
     pickler = pickle.Pickler(f, pickle.HIGHEST_PROTOCOL)
     pickler.dump(pid)
     pickler.dump(file_source)
+    pickler.dump(file_name)
     f.close()
+
+    # Vérification du démarrage de l'enregistrement
+
 
     # Mise en BDD
     con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
@@ -57,7 +63,7 @@ def rec_video(name):
 def unrec_video():
     login = 'simon'
     password = 'tchaik01'
-    url_nextcloud = 'http://cloud.aymeric-mai.fr/'
+    url_nextcloud = 'https://cloud.aymeric-mai.fr/'
     datetime.datetime.now().timestamp()
     timestamp = datetime.datetime.now()
     annee = timestamp.strftime('%Y')
@@ -70,6 +76,7 @@ def unrec_video():
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
     file_source = unpickler.load()
+    file_name = unpickler.load()
     f.close()
 
     try:
@@ -82,21 +89,22 @@ def unrec_video():
     oc = owncloud.Client(url_nextcloud)
     oc.login(login, password)
 
-    path_dest = '/Simon/Vidéo-Simon/' + annee + '/Semaine-' + semaine + ''
-    url_path_nextcloud = url_nextcloud + 'remote.php/dav/files/' + login + '/' + path_dest
+    path_dest = '/Simon/Vidéos-Simon/' + annee + '/Semaine-' + semaine + ''
+    url_path_nextcloud_temp = url_nextcloud + 'remote.php/dav/files/' + login + '' + path_dest + '/' + file_name + ''
+    url_path_nextcloud = url_path_nextcloud_temp.replace(' ', '%20')
 
     try:
-        oc.mkdir('Simon/Vidéo-Simon/' + annee + '')
+        oc.mkdir('Simon/Vidéos-Simon/' + annee + '')
     except:
         pass
 
     try:
-        oc.mkdir('Simon/Vidéo-Simon/' + annee + '/Semaine-' + semaine + '')
+        oc.mkdir('Simon/Vidéos-Simon/' + annee + '/Semaine-' + semaine + '')
     except:
         pass
-
-    cmdbase = 'curl -u ' + login + ':' + password + ' -T ' + file_source + ' ' + url_path_nextcloud + ''
-    process = subprocess.Popen(cmdbase)
+    cmdbase = 'curl -u ' + login + ':' + password + ' -T "' + file_source + '" ' + url_path_nextcloud
+    print(cmdbase)
+    subprocess.Popen(cmdbase, shell=True)
 
     # Pour une utilisation de la library python
     # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
@@ -106,10 +114,10 @@ def unrec_video():
     con.close()
 
     # Supprimer le fichier vidéo temporaire
-    if os.path.exists(file_source):
-        os.remove(file_source)
+    #if os.path.exists(file_source):
+    #    os.remove(file_source)
 
-    return pid
+    return file_source
 
 
 def status_rec():
