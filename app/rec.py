@@ -15,7 +15,7 @@ def rec_video(name):
     jour = timestamp.strftime('%d-%m-%y %Hh%M')
 
     # Création dossier
-    path = Path('/srv/aeve-rec-session/data/temp/')
+    path = Path('/home/aymeric/Documents/data/temp/')
     path.mkdir(parents=True, exist_ok=True)
 
     # Flux réseau caméra
@@ -23,7 +23,7 @@ def rec_video(name):
 
     # Nom fichier
     file_name = name + ' ' + jour + '.mp4'
-    file_source = '/srv/aeve-rec-session/data/temp/' + file_name
+    file_source = '/home/aymeric/Documents/data/temp/' + file_name
 
     # Démarrage VLC
     cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_source + ',access=file}"'
@@ -31,7 +31,7 @@ def rec_video(name):
     pid = os.getpgid(process.pid)
 
 
-    f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "wb")
+    f = open('/home/aymeric/Documents/data/out.ser', "wb")
     pickler = pickle.Pickler(f, pickle.HIGHEST_PROTOCOL)
     pickler.dump(pid)
     pickler.dump(file_source)
@@ -42,7 +42,7 @@ def rec_video(name):
 
 
     # Mise en BDD
-    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
+    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
     cur = con.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS rec(
@@ -69,9 +69,9 @@ def unrec_video():
     annee = timestamp.strftime('%Y')
     semaine = timestamp.strftime('%V le %m.%y')
 
-    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
+    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
     cur = con.cursor()
-    f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "rb")
+    f = open('/home/aymeric/Documents/data/out.ser', "rb")
 
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
@@ -121,7 +121,7 @@ def unrec_video():
 
 
 def status_rec():
-    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
+    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS rec(
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -148,7 +148,7 @@ def status_rec():
 
 
 def info_rec(rec_id):
-    con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
+    con = sqlite3.connect("/home/aymeric/Documents/data/bdd/rec_bdd.db")
     cur = con.cursor()
     cur.execute("SELECT * FROM rec WHERE id = ?", (rec_id,))
     res = cur.fetchall()
