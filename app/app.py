@@ -10,7 +10,7 @@ class RunRecSession(object):
         name = data['name']
         rec.rec_video(name)
         resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = json.dumps({"Nom du bénévole": name})
+        resp.body = json.dumps({"Nom du Bénévole": name})
 
 
 class StopRecSession(object):
