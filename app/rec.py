@@ -82,6 +82,7 @@ def unrec_video():
     try:
         os.killpg(pid, signal.SIGTERM)
     except ProcessLookupError:
+        print("Erreur avec le PID")
         pass
 
     # Use owncloud library for create dir of file mp4
@@ -103,8 +104,9 @@ def unrec_video():
     except:
         pass
     cmdbase = 'curl -u ' + login + ':' + password + ' -T "' + file_source + '" ' + url_path_nextcloud
-    print(cmdbase)
-    subprocess.Popen(cmdbase, shell=True)
+
+    process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+    pid = os.getpgid(process.pid)
 
     # Pour une utilisation de la library python
     # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
