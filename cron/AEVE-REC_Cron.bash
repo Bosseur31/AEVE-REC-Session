@@ -2,8 +2,8 @@
 
 
 #Dossier de base
-dir=/home/aymeric/Documents/data/temp ;
-dir_timestamp=/home/aymeric/Documents/data ;
+dir=/srv/aeve-rec-session/data/temp ;
+dir_timestamp=/srv/aeve-rec-session/back/temp_var ;
 filename="$dir_timestamp/timestamp.txt" ;
 
 if [ ! -f $filename ]
