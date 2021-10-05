@@ -76,7 +76,6 @@ def unrec_video():
     unpickler = pickle.Unpickler(f)
     pid = unpickler.load()
     file_source = unpickler.load()
-    file_name = unpickler.load()
     f.close()
 
     try:
@@ -89,10 +88,6 @@ def unrec_video():
     oc = owncloud.Client(url_nextcloud)
     oc.login(login, password)
 
-    path_dest = '/Simon/Vidéos-Simon/' + annee + '/Semaine-' + semaine + ''
-    url_path_nextcloud_temp = url_nextcloud + 'remote.php/dav/files/' + login + '' + path_dest + '/' + file_name + ''
-    url_path_nextcloud = url_path_nextcloud_temp.replace(' ', '%20')
-
     try:
         oc.mkdir('Simon/Vidéos-Simon/' + annee + '')
     except:
@@ -102,10 +97,6 @@ def unrec_video():
         oc.mkdir('Simon/Vidéos-Simon/' + annee + '/Semaine-' + semaine + '')
     except:
         pass
-    cmdbase = 'curl -u ' + login + ':' + password + ' -T "' + file_source + '" ' + url_path_nextcloud
-
-    process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
-    pid = os.getpgid(process.pid)
 
     # Pour une utilisation de la library python
     # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
@@ -165,3 +156,9 @@ def info_rec(rec_id):
     con.close()
 
     return rec_id, rec_name, rec_file, rec_time, rec_status
+
+def upload_file():
+    cmd_upload = '/home/aymeric/Documents/data/AEVE-REC_Cron.bash >> /home/aymeric/Documents/data/AEVE-REC_Cron.txt'
+    script = subprocess.Popen(cmd_upload, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+    script = "True"
+    return script

@@ -32,6 +32,13 @@ class StatusRecSession(object):
             resp.status = falcon.HTTP_200  # This is the default status
             resp.body = json.dumps({"status": status})
 
+class UploadFile(object):
+    def on_get(self, req, resp):
+        """Handles GET requests"""
+        state = rec.upload_file()
+        resp.status = falcon.HTTP_200  # This is the default status
+        resp.body = json.dumps({"Status": state})
+
 
 # falcon.API instances are callable WSGI apps
 app = falcon.App()
@@ -40,8 +47,10 @@ app = falcon.App()
 run_rec = RunRecSession()
 stop_rec = StopRecSession()
 status_rec = StatusRecSession()
+upload_file = UploadFile()
 
 # things will handle all requests to the '/things' URL path
 app.add_route('/run_rec', run_rec)
 app.add_route('/stop_rec', stop_rec)
 app.add_route('/status_rec', status_rec)
+app.add_route('/upload_file', upload_file)
