@@ -157,3 +157,9 @@ def info_rec(rec_id):
     con.close()
 
     return rec_id, rec_name, rec_file, rec_time, rec_status
+
+def upload_file():
+    cmd_upload = '/home/aymeric/Documents/data/AEVE-REC_Cron.bash >> /home/aymeric/Documents/data/AEVE-REC_Cron.txt'
+    script = subprocess.Popen(cmd_upload, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+    script = "True"
+    return script
