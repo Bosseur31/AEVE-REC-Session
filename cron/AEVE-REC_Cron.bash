@@ -21,6 +21,11 @@ then
     timestamp_modif=$(cat "$filename") ;
 fi
 
+#Ecriture du timestamp pour le prochain transfer
+
+timestamp_final=$(date +%s) ;
+echo "$timestamp_final" > "$filename" ;
+
 for video in $dir/*
 do
    #Nom du fichier apres son répertoire
