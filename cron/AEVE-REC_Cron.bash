@@ -61,8 +61,10 @@ do
    destnext="https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')"
    echo "Destination finale : "$destnext
 
-   #Execution de la commande de transfert
+   #Execution de la commande de transfert   
+   echo "Début Upload"
    log=$(curl -u simon:tchaik01 -T "$video" "https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')")
    echo $log
+   echo "Fin Upload"
 
 done
