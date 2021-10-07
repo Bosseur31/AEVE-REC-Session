@@ -18,6 +18,7 @@ timestamp_modif=$(cat "$filename") ;
 if [ "$timestamp_modif" == '' ]
 then
     echo "1577833200" > "$filename" ;
+    timestamp_modif=$(cat "$filename") ;
 fi
 
 for video in $dir/*
