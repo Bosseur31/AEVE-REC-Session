@@ -65,7 +65,4 @@ do
    log=$(curl -u simon:tchaik01 -T "$video" "https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')")
    echo $log
 
-   #Ecriture du timestamp 
-   timestamp_modif=$(date +%s) ;
-   echo "$timestamp_modif" > "$filename" ;
 done
