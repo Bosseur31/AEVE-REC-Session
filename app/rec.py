@@ -158,7 +158,7 @@ def info_rec(rec_id):
     return rec_id, rec_name, rec_file, rec_time, rec_status
 
 def upload_file():
-    cmd_upload = '/srv/aeve-rec-session/data/AEVE-REC_Cron.bash >> /var/log/AEVE-REC_Cron.txt'
+    cmd_upload = '/srv/aeve-rec-session/back/cron/AEVE-REC_Cron.bash >> /var/log/AEVE-REC_Cron.txt'
     script = subprocess.Popen(cmd_upload, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
     script = "True"
     return script
