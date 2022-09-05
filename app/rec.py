@@ -22,7 +22,7 @@ def rec_video(name):
     ip_cam = "192.168.1.142"
     rstp_server = 'rtsp://admin@' + ip_cam + '/0/av0'
 
-    import os
+    # Check if cam is connected
     ret = os.system("ping -c 3 " + ip_cam + "")
     if ret != 0:
         return False, "Camera not connected."
