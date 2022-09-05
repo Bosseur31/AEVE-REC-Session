@@ -19,7 +19,13 @@ def rec_video(name):
     path.mkdir(parents=True, exist_ok=True)
 
     # Flux réseau caméra
-    rstp_server = 'rtsp://admin@192.168.1.142/0/av0'
+    ip_cam = "192.168.1.142"
+    rstp_server = 'rtsp://admin@' + ip_cam + '/0/av0'
+
+    import os
+    ret = os.system("ping -c 3 " + ip_cam + "")
+    if ret != 0:
+        return False, "Camera not connected."
 
     # Nom fichier
     file_name = name + ' ' + jour + '.mp4'
@@ -30,7 +36,6 @@ def rec_video(name):
     process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     pid = os.getpgid(process.pid)
 
-
     f = open('/srv/aeve-rec-session/back/temp_var/out.ser', "wb")
     pickler = pickle.Pickler(f, pickle.HIGHEST_PROTOCOL)
     pickler.dump(pid)
@@ -39,7 +44,6 @@ def rec_video(name):
     f.close()
 
     # Vérification du démarrage de l'enregistrement
-
 
     # Mise en BDD
     con = sqlite3.connect("/srv/aeve-rec-session/back/bdd/rec_bdd.db")
@@ -57,7 +61,7 @@ def rec_video(name):
     con.commit()
     con.close()
 
-    return pid
+    return True, pid
 
 
 def unrec_video():
@@ -106,7 +110,7 @@ def unrec_video():
     con.close()
 
     # Supprimer le fichier vidéo temporaire
-    #if os.path.exists(file_source):
+    # if os.path.exists(file_source):
     #    os.remove(file_source)
 
     return file_source
@@ -156,6 +160,7 @@ def info_rec(rec_id):
     con.close()
 
     return rec_id, rec_name, rec_file, rec_time, rec_status
+
 
 def upload_file():
     cmd_upload = '/srv/aeve-rec-session/data/AEVE-REC_Cron.bash >> /var/log/AEVE-REC_Cron.txt'

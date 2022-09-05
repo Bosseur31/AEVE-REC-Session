@@ -8,9 +8,14 @@ class RunRecSession(object):
         """Handles POST requests"""
         data = json.load(req.stream)
         name = data['name']
-        rec.rec_video(name)
-        resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = json.dumps({"Nom du Bénévole": name})
+        r = rec.rec_video(name)
+        if r[0]:
+            resp.status = falcon.HTTP_200  # This is the default status
+            resp.body = json.dumps({"Nom du Bénévole": name})
+        else:
+            resp.status = falcon.HTTP_200  # This is the default status
+            resp.body = json.dumps({"Caméra non connecté, enregistrement non lancé !"})
+
 
 
 class StopRecSession(object):
