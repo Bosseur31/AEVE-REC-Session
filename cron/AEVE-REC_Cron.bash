@@ -5,6 +5,9 @@
 dir=/srv/aeve-rec-session/data/temp ;
 dir_timestamp=/srv/aeve-rec-session/back/temp_var ;
 filename="$dir_timestamp/timestamp.txt" ;
+date_log=$(date '+%d/%m/%Y %r') ;
+
+
 
 if [ ! -f $filename ]
 then
@@ -18,7 +21,26 @@ timestamp_modif=$(cat "$filename") ;
 if [ "$timestamp_modif" == '' ]
 then
     echo "1577833200" > "$filename" ;
+    timestamp_modif=$(cat "$filename") ;
 fi
+
+#Ecriture du timestamp 
+timestamp_final=$(date +%s) ;
+echo "$timestamp_final" > "$filename" ;
+
+echo '------------------------------------'
+echo '------------------------------------'
+echo '------------------------------------'
+echo '---- Nouvelle synchronisation ! ----'
+echo '------------------------------------'
+echo '------------------------------------'
+echo 'Date :' $date_log
+echo '------------------------------------'
+echo '------------------------------------'
+echo "Dernier transfer: "$timestamp_modif
+echo '------------------------------------'
+echo '------------------------------------'
+echo '------------------------------------'
 
 for video in $dir/*
 do
@@ -32,34 +54,33 @@ do
 
    if [ "$timestamp" -lt "$timestamp_modif" ] 
    then
-      echo "Vidéo deja traité"
-      break
+      echo "Vidéo deja traité :" $video
+      continue
    fi
   
    jour=$(date -d @"$(echo $timestamp)" +'%Y-%m-%d') ;
    mois=$(date -d @"$(echo $timestamp)" +'%m.%y') ;
    semaine=$(date --date=$jour +"%V") ;
    annee=$(date -d @"$(echo $timestamp)" +'%Y')
-  
-   #Debug
-   echo "Timestamp de la derniére modification de la vidéo: "$timestamp
-   echo "Timestamp du dernier transfer: "$timestamp_modif
-   echo "Nom video : "$destVideo
+   
+   #Remplacement des espaces pour URL
    echo "$destVideo"|sed -e 's/ /%20/g'
-   echo "Chemin complet : "$video
-   echo "La semaine : "$semaine
-   echo "Le mois annee : "$mois
-   echo "L'année: "$annee
    
    #Chemin de la destination et debug
    destnext="https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')"
-   echo "Destination finale : "$destnext
+   
 
    #Execution de la commande de transfert
    log=$(curl -u simon:tchaik01 -T "$video" "https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')")
    echo $log
+   
+   #Debug
+   echo "Nom video : "$destVideo
+   echo "Timestamp de la derniére modification de la vidéo: "$timestamp
+   echo "Chemin complet : "$video
+   echo "La semaine : "$semaine
+   echo "Le mois annee : "$mois
+   echo "L'année: "$annee
+   echo "Destination finale : "$destnext
 
-   #Ecriture du timestamp 
-   timestamp_modif=$(date +%s) ;
-   echo "$timestamp_modif" > "$filename" ;
 done

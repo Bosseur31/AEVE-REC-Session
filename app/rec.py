@@ -163,7 +163,7 @@ def info_rec(rec_id):
 
 
 def upload_file():
-    cmd_upload = '/srv/aeve-rec-session/data/AEVE-REC_Cron.bash >> /var/log/AEVE-REC_Cron.txt'
+    cmd_upload = '/srv/aeve-rec-session/back/cron/AEVE-REC_Cron.bash >> /var/log/AEVE-REC_Cron.txt'
     script = subprocess.Popen(cmd_upload, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
     script = "True"
     return script
