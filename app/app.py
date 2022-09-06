@@ -9,12 +9,12 @@ class RunRecSession(object):
         data = json.load(req.stream)
         name = data['name']
         r = rec.rec_video(name)
-        if r[0]:
+        if r[0] == True:
             resp.status = falcon.HTTP_200  # This is the default status
             resp.body = json.dumps({"Nom du Bénévole": name})
         else:
             resp.status = falcon.HTTP_200  # This is the default status
-            resp.body = json.dumps({"Caméra non connecté, enregistrement non lancé !"})
+            resp.body = json.dumps({"state": r[1]})
 
 
 
