@@ -88,9 +88,11 @@ def unrec_video():
         pass
 
     # Use owncloud library for create dir of file mp4
-
-    oc = owncloud.Client(url_nextcloud)
-    oc.login(login, password)
+    try:
+        oc = owncloud.Client(url_nextcloud)
+        oc.login(login, password)
+    except:
+        pass
 
     try:
         oc.mkdir('Simon/Vidéos-Simon/' + annee + '')
