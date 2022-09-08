@@ -11,10 +11,10 @@ class RunRecSession(object):
         r = rec.rec_video(name)
         if r[0] == True:
             resp.status = falcon.HTTP_200  # This is the default status
-            resp.body = json.dumps({"Nom du Bénévole": name})
+            resp.text = json.dumps({"Nom du Bénévole": name})
         else:
             resp.status = falcon.HTTP_200  # This is the default status
-            resp.body = json.dumps({"state": r[1]})
+            resp.text = json.dumps({"state": r[1]})
 
 
 
@@ -23,7 +23,7 @@ class StopRecSession(object):
         """Handles GET requests"""
         pid = rec.unrec_video()
         resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = json.dumps({"Pid": pid})
+        resp.text = json.dumps({"Pid": pid})
 
 class StatusRecSession(object):
     def on_get(self, req, resp):
@@ -32,17 +32,17 @@ class StatusRecSession(object):
         if status[0] == 'true':
             info = rec.info_rec(status[1])
             resp.status = falcon.HTTP_200
-            resp.body = json.dumps({"id": info[0], 'name': info[1], 'file': info[2], 'time': info[3], 'status': info[4]})
+            resp.text = json.dumps({"id": info[0], 'name': info[1], 'file': info[2], 'time': info[3], 'status': info[4]})
         else:
             resp.status = falcon.HTTP_200  # This is the default status
-            resp.body = json.dumps({"status": status})
+            resp.text = json.dumps({"status": status})
 
 class UploadFile(object):
     def on_get(self, req, resp):
         """Handles GET requests"""
         state = rec.upload_file()
         resp.status = falcon.HTTP_200  # This is the default status
-        resp.body = json.dumps({"Status": state})
+        resp.text = json.dumps({"Status": state})
 
 
 # falcon.API instances are callable WSGI apps
