@@ -32,7 +32,7 @@ def rec_video(name):
     file_source = '/srv/aeve-rec-session/data/temp/' + file_name
 
     # Démarrage VLC
-    cmdbase = 'cvlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_source + ',access=file}"'
+    cmdbase = 'vlc -I dummy ' + rstp_server + ' --sout="#transcode{vcodec=h264,acodec=mp3,vb=500,fps=30.0}:std{mux=mp4,dst=' + file_source + ',access=file}"'
     process = subprocess.Popen(cmdbase, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     pid = os.getpgid(process.pid)
 
