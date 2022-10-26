@@ -114,7 +114,7 @@ def unrec_video():
     cur.execute("SELECT id FROM rec WHERE status = 1 ORDER BY id DESC LIMIT 1")
     data = cur.fetchall()
 
-    # true = enregistrement en cours / false = pas d'enregistrement en cours
+    # Replace all database status with 0 if replace uniquely last ID not working
     if len(data) != 0:
         cur.execute("UPDATE rec SET status = 0")
         con.commit()

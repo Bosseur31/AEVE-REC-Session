@@ -55,9 +55,15 @@ do
    if [ "$timestamp" -lt "$timestamp_modif" ] 
    then
       echo "Vidéo deja traité :" $video
+
       continue
    fi
-  
+
+   if [ "$timestamp" -lt "$timestamp_modif - 2595600" ]
+   then
+      echo "Video a plus de 30 jours :" $video
+   fi
+
    jour=$(date -d @"$(echo $timestamp)" +'%Y-%m-%d') ;
    mois=$(date -d @"$(echo $timestamp)" +'%m.%y') ;
    semaine=$(date --date=$jour +"%V") ;
