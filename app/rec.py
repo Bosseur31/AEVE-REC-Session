@@ -107,7 +107,7 @@ def unrec_video():
     # Pour une utilisation de la library python
     # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
 
-    cur.execute("UPDATE rec SET status = 0 WHERE max(id)")
+    cur.execute("UPDATE rec SET status = 0 ORDER BY id DESC LIMIT 1")
     con.commit()
 
     # Verify status is change to 0
