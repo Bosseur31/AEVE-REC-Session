@@ -7,6 +7,8 @@ dir_timestamp=/srv/aeve-rec-session/back/temp_var ;
 filename="$dir_timestamp/timestamp.txt" ;
 date_log=$(date '+%d/%m/%Y %r') ;
 
+#Time for save temp video
+timestamp_save=$((2595600))
 
 
 if [ ! -f $filename ]
@@ -59,7 +61,9 @@ do
       continue
    fi
 
-   if [ "$timestamp" -lt "$timestamp_modif - 2595600" ]
+
+
+   if [ "$timestamp" -lt "$timestamp_modif - $timestamp_save" ]
    then
       echo "Video a plus de 30 jours :" $video
    fi
