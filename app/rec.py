@@ -107,8 +107,18 @@ def unrec_video():
     # Pour une utilisation de la library python
     # oc.drop_file('/home/aymeric/Codage/AEVE-REC-API/app/test.txt')
 
-    cur.execute("UPDATE rec SET status = 0")
+    cur.execute("UPDATE rec SET status = 0 WHERE max(id)")
     con.commit()
+
+    # Verify status is change to 0
+    cur.execute("SELECT id FROM rec WHERE status = 1 ORDER BY id DESC LIMIT 1")
+    data = cur.fetchall()
+
+    # true = enregistrement en cours / false = pas d'enregistrement en cours
+    if len(data) != 0:
+        cur.execute("UPDATE rec SET status = 0")
+        con.commit()
+
     con.close()
 
     # Supprimer le fichier vidéo temporaire
