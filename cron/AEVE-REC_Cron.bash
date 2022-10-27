@@ -8,8 +8,8 @@ filename="$dir_timestamp/timestamp.txt"
 date_log=$(date '+%d/%m/%Y %r')
 
 #Time for save temp video
-#timestamp_save=$((2595600))
-timestamp_save=$((1987200))
+timestamp_save=$((2595600))
+
 
 if [ ! -f $filename ]
 then
@@ -42,6 +42,9 @@ echo '------------------------------------'
 echo "Dernier transfer: "$timestamp_modif
 echo '------------------------------------'
 echo '------------------------------------'
+echo "Délai de temp: "$timestamp_save
+echo '------------------------------------'
+echo '------------------------------------'
 echo '------------------------------------'
 
 for video in $dir/*
@@ -54,9 +57,10 @@ do
    #Récupération du timestamp de dérniere modif de la vidéo
    timestamp=$(stat -c '%Y' "$dir/$destVideo")
 
+   #Calcul timestamp limite de stockage temp
    timestamp_sm=$(($timestamp_modif - $timestamp_save))
-   echo "Timestamp Limite 30 j" $timestamp_sm
 
+   #Suppression du temp si la limite est dépassée
    if [ "$timestamp" -lt "$timestamp_sm" ]
    then
       echo "Video a plus de 30 jours, suppression :" $video
@@ -64,7 +68,7 @@ do
       continue
    fi
 
-
+   #Verifie que la vidéo n'es pas deja etais upload
    if [ "$timestamp" -lt "$timestamp_modif" ]
    then
       echo "Vidéo deja traité :" $video
