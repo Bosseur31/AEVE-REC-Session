@@ -54,18 +54,21 @@ do
    #Récupération du timestamp de dérniere modif de la vidéo
    timestamp=$(stat -c '%Y' "$dir/$destVideo") ;
 
-   if [ "$timestamp" -lt "$timestamp_modif" ] 
-   then
-      echo "Vidéo deja traité :" $video
-
-      continue
-   fi
-
-  timestamp_sm=$(($timestamp_modif - $timestamp_save))
+   timestamp_sm=$(($timestamp_modif - $timestamp_save))
+   echo "Timestamp Limite 30 j" $timestamp_sm
 
    if [ "$timestamp" -lt "$timestamp_sm" ]
    then
       echo "Video a plus de 30 jours :" $video
+      continue
+   fi
+
+
+   if [ "$timestamp" -lt "$timestamp_modif" ]
+   then
+      echo "Vidéo deja traité :" $video
+
+      continue
    fi
 
    jour=$(date -d @"$(echo $timestamp)" +'%Y-%m-%d') ;
