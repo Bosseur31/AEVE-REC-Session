@@ -8,8 +8,8 @@ filename="$dir_timestamp/timestamp.txt" ;
 date_log=$(date '+%d/%m/%Y %r') ;
 
 #Time for save temp video
-timestamp_save=$((2595600))
-
+#timestamp_save=$((2595600))
+timestamp_save=$((1987200))
 
 if [ ! -f $filename ]
 then
@@ -67,7 +67,6 @@ do
    if [ "$timestamp" -lt "$timestamp_modif" ]
    then
       echo "Vidéo deja traité :" $video
-
       continue
    fi
 
