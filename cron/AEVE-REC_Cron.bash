@@ -61,9 +61,9 @@ do
       continue
    fi
 
+  timestamp_sm=$(($timestamp_modif - $timestamp_save))
 
-
-   if [ "$timestamp" -lt "$timestamp_modif - $timestamp_save" ]
+   if [ "$timestamp" -lt "$timestamp_sm" ]
    then
       echo "Video a plus de 30 jours :" $video
    fi
