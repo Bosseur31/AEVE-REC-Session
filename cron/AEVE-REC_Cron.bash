@@ -2,10 +2,10 @@
 
 
 #Dossier de base
-dir=/srv/aeve-rec-session/data/temp ;
-dir_timestamp=/srv/aeve-rec-session/back/temp_var ;
-filename="$dir_timestamp/timestamp.txt" ;
-date_log=$(date '+%d/%m/%Y %r') ;
+dir=/srv/aeve-rec-session/data/temp
+dir_timestamp=/srv/aeve-rec-session/back/temp_var
+filename="$dir_timestamp/timestamp.txt"
+date_log=$(date '+%d/%m/%Y %r')
 
 #Time for save temp video
 #timestamp_save=$((2595600))
@@ -18,17 +18,17 @@ fi
 
 #Récupération du dernier timestamp de transfer
 
-timestamp_modif=$(cat "$filename") ;
+timestamp_modif=$(cat "$filename")
 
 if [ "$timestamp_modif" == '' ]
 then
-    echo "1577833200" > "$filename" ;
-    timestamp_modif=$(cat "$filename") ;
+    echo "1577833200" > "$filename"
+    timestamp_modif=$(cat "$filename")
 fi
 
 #Ecriture du timestamp 
-timestamp_final=$(date +%s) ;
-echo "$timestamp_final" > "$filename" ;
+timestamp_final=$(date +%s)
+echo "$timestamp_final" > "$filename"
 
 echo '------------------------------------'
 echo '------------------------------------'
@@ -47,19 +47,20 @@ echo '------------------------------------'
 for video in $dir/*
 do
    #Nom du fichier apres son répertoire
-   destVideo=$(basename "$video");
+   destVideo=$(basename "$video")
    #Nom du répertoire
-   srcVideo=$(dirname $video);
+   srcVideo=$(dirname $video)
 
    #Récupération du timestamp de dérniere modif de la vidéo
-   timestamp=$(stat -c '%Y' "$dir/$destVideo") ;
+   timestamp=$(stat -c '%Y' "$dir/$destVideo")
 
    timestamp_sm=$(($timestamp_modif - $timestamp_save))
    echo "Timestamp Limite 30 j" $timestamp_sm
 
    if [ "$timestamp" -lt "$timestamp_sm" ]
    then
-      echo "Video a plus de 30 jours :" $video
+      echo "Video a plus de 30 jours, suppression :" $video
+      rm "$dir/$destVideo"
       continue
    fi
 
@@ -70,9 +71,9 @@ do
       continue
    fi
 
-   jour=$(date -d @"$(echo $timestamp)" +'%Y-%m-%d') ;
-   mois=$(date -d @"$(echo $timestamp)" +'%m.%y') ;
-   semaine=$(date --date=$jour +"%V") ;
+   jour=$(date -d @"$(echo $timestamp)" +'%Y-%m-%d')
+   mois=$(date -d @"$(echo $timestamp)" +'%m.%y')
+   semaine=$(date --date=$jour +"%V")
    annee=$(date -d @"$(echo $timestamp)" +'%Y')
    
    #Remplacement des espaces pour URL
