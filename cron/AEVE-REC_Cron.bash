@@ -2,8 +2,8 @@
 
 
 #Dossier de base
-dir=/srv/aeve-rec-session/data/temp
-dir_timestamp=/srv/aeve-rec-session/back/temp_var
+dir=/api/rec_tmp
+dir_timestamp=/api/var_tmp
 filename="$dir_timestamp/timestamp.txt"
 date_log=$(date '+%d/%m/%Y %r')
 
@@ -88,7 +88,7 @@ do
    
 
    #Execution de la commande de transfert
-   log=$(curl -u simon:tchaik01 -T "$video" "https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')")
+   log=$(curl -u simon:tchaik0123 -T "$video" "https://cloud.aymeric-mai.fr/remote.php/dav/files/simon/Simon/Vidéos-Simon/$(echo "$annee")/Semaine-$semaine%20le%20$mois/$(echo "$destVideo"|sed -e 's/ /%20/g')")
    echo $log
    
    #Debug
